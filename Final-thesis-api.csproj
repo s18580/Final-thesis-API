@@ -5,4 +5,8 @@
     <RootNamespace>Final_thesis_api</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
