@@ -1,4 +1,6 @@
-﻿namespace Final_thesis_api.Models.DictionaryModels
+﻿using System.Collections.Generic;
+
+namespace Final_thesis_api.Models.DictionaryModels
 {
     public class ServiceName
     {
@@ -8,5 +10,6 @@
         public int? IdMinimumRate { get; set; }
 
         public MinimumRate MinimumRate { get; set; }
+        public ICollection<Service> Services { get; set; }
     }
 }
