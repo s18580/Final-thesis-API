@@ -8,6 +8,7 @@ namespace Final_thesis_api.Models
         public double Price { get; set; }
         public int IdLink { get; set; }
         public int? IdServiceName { get; set; }
+        public bool IsForCover { get; set; }
 
         public OrderItem OrderItem { get; set; }
         public Valuation Valuation { get; set; }

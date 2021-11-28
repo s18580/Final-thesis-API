@@ -13,6 +13,7 @@ namespace Final_thesis_api.Models
         public double PricePerKilogram { get; set; }
         public int Quantity { get; set; }
         public int IdLink { get; set; }
+        public bool IsForCover { get; set; }
 
         public OrderItem OrderItem { get; set; }
         public Valuation Valuation { get; set; }
