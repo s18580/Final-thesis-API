@@ -26,7 +26,7 @@ namespace Final_thesis_api.Models
         public int IdOrderItem { get; set; }
         public int? IdBindingType { get; set; }
 
-        public Worker Worker { get; set; }
+        public Worker Author { get; set; }
         public BindingType BindingType { get; set; }
         public ICollection<File> Files { get; set; }
         public ICollection<Color> CoverColors { get; set; }
