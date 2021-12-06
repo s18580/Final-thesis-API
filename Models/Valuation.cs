@@ -29,12 +29,9 @@ namespace Final_thesis_api.Models
         public Worker Author { get; set; }
         public BindingType BindingType { get; set; }
         public ICollection<File> Files { get; set; }
-        public ICollection<Color> CoverColors { get; set; }
-        public ICollection<Color> InsideColors { get; set; }
-        public ICollection<Paper> CoverPapers { get; set; }
-        public ICollection<Paper> InsidePapers { get; set; }
-        public ICollection<Service> CoverServices { get; set; }
-        public ICollection<Service> InsideServices { get; set; }
+        public ICollection<Color> Colors { get; set; }
+        public ICollection<Paper> Papers { get; set; }
+        public ICollection<Service> Services { get; set; }
         public ICollection<ValuationPriceList> PriceListPrices { get; set; }
     }
 }
