@@ -1,14 +1,11 @@
+using Final_thesis_api.Models;
+using Final_thesis_api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Final_thesis_api
 {
@@ -24,7 +21,11 @@ namespace Final_thesis_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddScoped<IDbService, SqlDbService>();
+            services.AddDbContext<ModelContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("Database"));
+            });
             services.AddControllers();
         }
 

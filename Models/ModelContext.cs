@@ -1,5 +1,6 @@
 ﻿using Final_thesis_api.Models.DictionaryModels;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Final_thesis_api.Models
 {
@@ -39,6 +40,11 @@ namespace Final_thesis_api.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
             modelBuilder.Entity<Worker>(opt =>
             {
                 opt.HasKey(p => p.IdWorker);
@@ -66,6 +72,22 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.Salt)
                    .HasMaxLength(50)
                    .IsRequired();
+
+                opt.HasOne(p => p.Worksite)
+                   .WithMany(p => p.Workers)
+                   .HasForeignKey(p => p.IdWorksite);
+
+                opt.HasMany(p => p.Valuations)
+                   .WithOne(p => p.Author)
+                   .HasForeignKey(p => p.IdAuthor);
+
+                opt.HasMany(p => p.Assignments)
+                   .WithOne(p => p.Worker)
+                   .HasForeignKey(p => p.IdWorker);
+
+                opt.HasMany(p => p.Customers)
+                   .WithOne(p => p.Worker)
+                   .HasForeignKey(p => p.IdWorker);
             });
 
             modelBuilder.Entity<Worksite>(opt =>
@@ -91,6 +113,11 @@ namespace Final_thesis_api.Models
 
                 opt.Property(p => p.CompanyEmailAddress)
                    .HasMaxLength(255);
+
+                opt.HasMany(p => p.Representatives)
+                   .WithOne(p => p.Customer)
+                   .HasForeignKey(p => p.IdOwner);
+
             });
 
             modelBuilder.Entity<Supplier>(opt =>
@@ -110,6 +137,10 @@ namespace Final_thesis_api.Models
 
                 opt.Property(p => p.EmailAddress)
                    .HasMaxLength(255);
+
+                opt.HasMany(p => p.Representatives)
+                   .WithOne(p => p.Supplier)
+                   .HasForeignKey(p => p.IdOwner);
             });
 
             modelBuilder.Entity<Address>(opt =>
@@ -139,6 +170,18 @@ namespace Final_thesis_api.Models
 
                 opt.Property(p => p.ApartmentNumber)
                    .HasMaxLength(10);
+
+                opt.HasOne(p => p.Customer)
+                   .WithMany(p => p.Addresses)
+                   .HasForeignKey(p => p.IdOwner);
+
+                opt.HasOne(p => p.Supplier)
+                   .WithMany(p => p.Addresses)
+                   .HasForeignKey(p => p.IdOwner);
+
+                opt.HasMany(p => p.DeliveriesAddresses)
+                   .WithOne(p => p.Address)
+                   .HasForeignKey(p => p.IdAddress);
             });
 
             modelBuilder.Entity<Representative>(opt =>
@@ -181,6 +224,30 @@ namespace Final_thesis_api.Models
 
                 opt.Property(p => p.Note)
                    .HasMaxLength(255);
+
+                opt.HasOne(p => p.Status)
+                   .WithMany(p => p.Orders)
+                   .HasForeignKey(p => p.IdStatus);
+
+                opt.HasMany(p => p.DeliveriesAddresses)
+                   .WithOne(p => p.Order)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.Representative)
+                   .WithMany(p => p.Orders)
+                   .HasForeignKey(p => p.IdRepresentative);
+
+                opt.HasMany(p => p.Assignments)
+                   .WithOne(p => p.Order)
+                   .HasForeignKey(p => p.IdOrder);
+
+                opt.HasMany(p => p.OrderItems)
+                   .WithOne(p => p.Order)
+                   .HasForeignKey(p => p.IdOrder);
+
+                opt.HasMany(p => p.Files)
+                   .WithOne(p => p.Order)
+                   .HasForeignKey(p => p.IdLink);
             });
 
             modelBuilder.Entity<OrderStatus>(opt =>
@@ -201,6 +268,15 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.Name)
                    .HasMaxLength(50)
                    .IsRequired();
+
+                opt.HasOne(p => p.FileStatus)
+                   .WithMany(p => p.Files)
+                   .HasForeignKey(p => p.IdFileStatus);
+
+                opt.HasOne(p => p.FileType)
+                   .WithMany(p => p.Files)
+                   .HasForeignKey(p => p.IdFileType);
+
             });
 
             modelBuilder.Entity<FileType>(opt =>
@@ -236,6 +312,22 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.ItemDescription)
                    .HasMaxLength(255)
                    .IsRequired();
+
+                opt.HasOne(p => p.SupplyItemType)
+                   .WithMany(p => p.Supplies)
+                   .HasForeignKey(p => p.IdSupplyItemType);
+
+                opt.HasMany(p => p.DeliveriesAddresses)
+                   .WithOne(p => p.Supply)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.OrderItem)
+                   .WithMany(p => p.Supplies)
+                   .HasForeignKey(p => p.IdOrderItem);
+
+                opt.HasOne(p => p.Representative)
+                   .WithMany(p => p.Supplies)
+                   .HasForeignKey(p => p.IdRepresentative);
             });
 
             modelBuilder.Entity<SupplyItemType>(opt =>
@@ -265,6 +357,23 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.InsideFormat)
                    .HasMaxLength(100)
                    .IsRequired();
+
+                opt.HasMany(p => p.Files)
+                   .WithOne(p => p.OrderItem)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.OrderItemType)
+                   .WithMany(p => p.OrderItems)
+                   .HasForeignKey(p => p.IdOrderItemType);
+
+                opt.HasOne(p => p.DeliveryType)
+                   .WithMany(p => p.OrderItems)
+                   .HasForeignKey(p => p.IdDeliveryType);
+
+                opt.HasOne(p => p.BindingType)
+                   .WithMany(p => p.OrderItems)
+                   .HasForeignKey(p => p.IdBindingType);
+
             });
 
             modelBuilder.Entity<DeliveryType>(opt =>
@@ -295,6 +404,14 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.Name)
                    .HasMaxLength(10)
                    .IsRequired();
+
+                opt.HasOne(p => p.Valuation)
+                   .WithMany(p => p.Colors)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.OrderItem)
+                   .WithMany(p => p.Colors)
+                   .HasForeignKey(p => p.IdLink);
             });
 
             modelBuilder.Entity<BindingType>(opt =>
@@ -321,6 +438,10 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.Name)
                    .HasMaxLength(30)
                    .IsRequired();
+
+                opt.HasOne(p => p.MinimumRate)
+                   .WithMany(p => p.ServicesNames)
+                   .HasForeignKey(p => p.IdMinimumRate);
             });
 
             modelBuilder.Entity<Valuation>(opt =>
@@ -345,6 +466,18 @@ namespace Final_thesis_api.Models
 
                 opt.Property(p => p.CoverSheetFormat)
                    .HasMaxLength(100);
+
+                opt.HasMany(p => p.Files)
+                   .WithOne(p => p.Valuation)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.BindingType)
+                   .WithMany(p => p.Valuations)
+                   .HasForeignKey(p => p.IdBindingType);
+
+                opt.HasMany(p => p.PriceListPrices)
+                   .WithOne(p => p.Valuation)
+                   .HasForeignKey(p => p.IdPriceList);
             });
 
             modelBuilder.Entity<Paper>(opt =>
@@ -362,12 +495,32 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.SheetFormat)
                    .HasMaxLength(100)
                    .IsRequired();
+
+                opt.HasOne(p => p.OrderItem)
+                   .WithMany(p => p.Papers)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.Valuation)
+                   .WithMany(p => p.Papers)
+                   .HasForeignKey(p => p.IdLink);
             });
 
             modelBuilder.Entity<Service>(opt =>
             {
                 opt.HasKey(p => p.IdService);
                 opt.Property(p => p.IdService).ValueGeneratedOnAdd();
+
+                opt.HasOne(p => p.ServiceName)
+                   .WithMany(p => p.Services)
+                   .HasForeignKey(p => p.IdServiceName);
+
+                opt.HasOne(p => p.OrderItem)
+                   .WithMany(p => p.Services)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.Valuation)
+                   .WithMany(p => p.Services)
+                   .HasForeignKey(p => p.IdLink);
             });
 
             modelBuilder.Entity<PriceList>(opt =>
@@ -378,6 +531,10 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.Name)
                    .HasMaxLength(30)
                    .IsRequired();
+
+                opt.HasMany(p => p.ValuationPriceLists)
+                   .WithOne(p => p.PriceList)
+                   .HasForeignKey(p => p.IdPriceList);
             });
 
             modelBuilder.Entity<ValuationPriceList>(opt =>
