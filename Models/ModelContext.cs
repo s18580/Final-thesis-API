@@ -398,6 +398,14 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.Name)
                    .HasMaxLength(10)
                    .IsRequired();
+
+                opt.HasOne(p => p.Valuation)
+                   .WithMany(p => p.Colors)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.OrderItem)
+                   .WithMany(p => p.Colors)
+                   .HasForeignKey(p => p.IdLink);
             });
 
             modelBuilder.Entity<BindingType>(opt =>
@@ -481,6 +489,14 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.SheetFormat)
                    .HasMaxLength(100)
                    .IsRequired();
+
+                opt.HasOne(p => p.OrderItem)
+                   .WithMany(p => p.Papers)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.Valuation)
+                   .WithMany(p => p.Papers)
+                   .HasForeignKey(p => p.IdLink);
             });
 
             modelBuilder.Entity<Service>(opt =>
@@ -491,6 +507,14 @@ namespace Final_thesis_api.Models
                 opt.HasOne(p => p.ServiceName)
                    .WithMany(p => p.Services)
                    .HasForeignKey(p => p.IdServiceName);
+
+                opt.HasOne(p => p.OrderItem)
+                   .WithMany(p => p.Services)
+                   .HasForeignKey(p => p.IdLink);
+
+                opt.HasOne(p => p.Valuation)
+                   .WithMany(p => p.Services)
+                   .HasForeignKey(p => p.IdLink);
             });
 
             modelBuilder.Entity<PriceList>(opt =>
