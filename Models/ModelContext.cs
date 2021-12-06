@@ -1,5 +1,6 @@
 ﻿using Final_thesis_api.Models.DictionaryModels;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Final_thesis_api.Models
 {
@@ -39,6 +40,11 @@ namespace Final_thesis_api.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
             modelBuilder.Entity<Worker>(opt =>
             {
                 opt.HasKey(p => p.IdWorker);
