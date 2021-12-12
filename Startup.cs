@@ -24,11 +24,14 @@ namespace Final_thesis_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IDbService, SqlDbService>();
+
             services.AddDbContext<ModelContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Database"));
             });
+
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Printing Management System", Version = "v1" });
@@ -41,7 +44,9 @@ namespace Final_thesis_api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
                 app.UseSwagger();
+
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PrintingManagementSystem v1"));
             }
 
