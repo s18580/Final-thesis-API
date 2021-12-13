@@ -553,6 +553,9 @@ namespace Final_thesis_api.Models
                 opt.HasKey(p => p.IdRole);
                 opt.Property(p => p.IdRole).ValueGeneratedOnAdd();
 
+                opt.Property(p => p.Name)
+                   .HasMaxLength(30);
+
                 opt.HasMany(p => p.RoleAssignments)
                    .WithOne(p => p.Role)
                    .HasForeignKey(p => p.IdRole);
