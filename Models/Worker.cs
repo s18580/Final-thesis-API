@@ -15,6 +15,7 @@ namespace Final_thesis_api.Models
         public int IdWorksite { get; set; }
 
         public Worksite Worksite { get; set; }
+        public ICollection<RoleAssignment> RoleAssignments { get; set; }
         public ICollection<Customer> Customers { get; set; }
         public ICollection<Valuation> Valuations { get; set; }
         public ICollection<Assignment> Assignments { get; set; }

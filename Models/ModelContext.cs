@@ -1,4 +1,4 @@
-﻿using Final_thesis_api.Models.DictionaryModels;
+﻿    using Final_thesis_api.Models.DictionaryModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -33,6 +33,8 @@ namespace Final_thesis_api.Models
         public DbSet<ServiceName> ServiceNames { get; set; }
         public DbSet<PriceList> PriceLists { get; set; }
         public DbSet<ValuationPriceList> ValuationPriceLists { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RoleAssignment> RoleAssignments { get; set; }
 
         public ModelContext() { }
         public ModelContext(DbContextOptions options) : base(options) { }
@@ -86,6 +88,10 @@ namespace Final_thesis_api.Models
                    .HasForeignKey(p => p.IdWorker);
 
                 opt.HasMany(p => p.Customers)
+                   .WithOne(p => p.Worker)
+                   .HasForeignKey(p => p.IdWorker);
+
+                opt.HasMany(p => p.RoleAssignments)
                    .WithOne(p => p.Worker)
                    .HasForeignKey(p => p.IdWorker);
             });
@@ -540,6 +546,21 @@ namespace Final_thesis_api.Models
             modelBuilder.Entity<ValuationPriceList>(opt =>
             {
                 opt.HasKey(p => new { p.IdValuation, p.IdPriceList });
+            });
+
+            modelBuilder.Entity<Role>(opt =>
+            {
+                opt.HasKey(p => p.IdRole);
+                opt.Property(p => p.IdRole).ValueGeneratedOnAdd();
+
+                opt.HasMany(p => p.RoleAssignments)
+                   .WithOne(p => p.Role)
+                   .HasForeignKey(p => p.IdRole);
+            });
+
+            modelBuilder.Entity<RoleAssignment>(opt =>
+            {
+                opt.HasKey(p => new { p.IdWorker, p.IdRole });
             });
         }
     }
