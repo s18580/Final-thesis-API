@@ -11,7 +11,6 @@ namespace Final_thesis_api.Models
         public string PhonerNumber { get; set; }
         public string EmailAddress { get; set; }
         public string PassHash { get; set; }
-        public string Salt { get; set; }
         public int IdWorksite { get; set; }
 
         public Worksite Worksite { get; set; }

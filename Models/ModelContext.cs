@@ -71,10 +71,6 @@ namespace Final_thesis_api.Models
                    .HasMaxLength(200)
                    .IsRequired();
 
-                opt.Property(p => p.Salt)
-                   .HasMaxLength(50)
-                   .IsRequired();
-
                 opt.HasOne(p => p.Worksite)
                    .WithMany(p => p.Workers)
                    .HasForeignKey(p => p.IdWorksite);
