@@ -6,10 +6,10 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace Final_thesis_api.Handlers
 {
@@ -23,15 +23,36 @@ namespace Final_thesis_api.Handlers
             _service = service;
         }
 
+        public string HashPassword(string password)
+        {
+            // generate salt
+            byte[] salt;
+            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
+
+            // create passwordHash
+            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000);
+            byte[] hash = pbkdf2.GetBytes(20);
+
+            // store salt with hash
+            byte[] hashBytes = new byte[36];
+            Array.Copy(salt, 0, hashBytes, 0, 16);
+            Array.Copy(hash, 0, hashBytes, 16, 20);
+
+            // transform bytes into string
+            string savedPasswordHash = Convert.ToBase64String(hashBytes);
+
+            return savedPasswordHash;
+        }
+
         public async Task<Object> AuthorizeUser(UserLogin userLogin)
         {
             var userData = await _service.GetUserLoginData(userLogin.Email);
-            if (!comparePasswords(userLogin, userData))
+            if (!ComparePasswords(userLogin, userData))
             {
-                throw new InvalidCredentialException();
+                throw new UnauthorizedAccessException();
             }
 
-            var token = await createJwtToken(userData);
+            var token = await CreateJwtToken(userData);
             
             return new
             {
@@ -40,14 +61,30 @@ namespace Final_thesis_api.Handlers
             };
         }
 
-        private bool comparePasswords(UserLogin userlogin, UserData userData)
+        private bool ComparePasswords(UserLogin userlogin, UserData userData)
         {
+            // get salt from hash
+            byte[] hashBytes = Convert.FromBase64String(userData.PasswordHash);
+            byte[] salt = new byte[16];
+            Array.Copy(hashBytes, 0, salt, 0, 16);
+
             // hash the password
-            // compare passes
+            var pbkdf2 = new Rfc2898DeriveBytes(userlogin.Password, salt, 100000);
+            byte[] hash = pbkdf2.GetBytes(20);
+
+            // compare passwords
+            for (int i = 0; i < 20; i++)
+            {
+                if (hashBytes[i + 16] != hash[i])
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 
-        private async Task<JwtSecurityToken> createJwtToken(UserData userData)
+        private async Task<JwtSecurityToken> CreateJwtToken(UserData userData)
         {
             //   get all user roles
             List<Role> roles = (List<Role>)await _service.GetAllUserRoles(userData.IdWorker);
