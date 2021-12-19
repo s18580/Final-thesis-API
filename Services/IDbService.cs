@@ -8,32 +8,42 @@ namespace Final_thesis_api.Services
 {
     public interface IDbService
     {
+        #region DTOs
         public Task<UserData> GetUserLoginData(string email);
-        public Task<IEnumerable<Role>> GetAllUserRoles(int id);
+        #endregion
 
+        #region Main models
         public Task<IEnumerable<RoleAssignment>> GetAllRoleAssignments();
-        public Task<RoleAssignment> GetRoleAssignment(int id);
+        public Task<RoleAssignment> GetRoleAssignment(int idWorker, int idRole);
+        public Task<IEnumerable<RoleAssignment>> GetRolesAssignmentByWorker(int id);
+        public Task<IEnumerable<RoleAssignment>> GetRolesAssignmentByRole(int id);
         public Task<RoleAssignment> AddRoleAssignment(RoleAssignment roleAssignment);
         public Task<RoleAssignment> UpdateRoleAssignment(RoleAssignment roleAssignment);
-        public Task<bool> DeleteRoleAssignment(int id);
+        public Task<bool> DeleteRoleAssignment(int idWorker, int idRole);
 
         public Task<IEnumerable<ValuationPriceList>> GetAllValuationPriceLists();
-        public Task<ValuationPriceList> GetValuationPriceList(int id);
+        public Task<ValuationPriceList> GetValuationPriceList(int idValutaion, int idPriceList);
+        public Task<IEnumerable<ValuationPriceList>> GetValuationPriceListByValuation(int idValutaion);
+        public Task<IEnumerable<ValuationPriceList>> GetValuationPriceListByPriceList(int idPriceList);
         public Task<ValuationPriceList> AddValuationPriceList(ValuationPriceList valuationPriceList);
         public Task<ValuationPriceList> UpdateValuationPriceList(ValuationPriceList valuationPriceList);
-        public Task<bool> DeleteValuationPriceList(int id);
+        public Task<bool> DeleteValuationPriceList(int idValutaion, int idPriceList);
 
         public Task<IEnumerable<DeliveriesAddresses>> GetAllDeliveriesAddresses();
-        public Task<DeliveriesAddresses> GetDeliveriesAddresses(int id);
+        public Task<DeliveriesAddresses> GetDeliveriesAddresses(int idAddress, int idLink);
+        public Task<IEnumerable<DeliveriesAddresses>> GetDeliveriesAddressesByAddress(int idAddress);
+        public Task<IEnumerable<DeliveriesAddresses>> GetDeliveriesAddressesByLink(int idLink);
         public Task<DeliveriesAddresses> AddDeliveriesAddresses();
         public Task<DeliveriesAddresses> UpdateDeliveriesAddresses();
-        public Task<bool> DeleteDeliveriesAddresses(int id);
+        public Task<bool> DeleteDeliveriesAddresses(int idAddress, int idLink);
 
         public Task<IEnumerable<Assignment>> GetAllAssignments();
-        public Task<Assignment> GetAssignment(int id);
+        public Task<Assignment> GetAssignment(int idWorker, int idOrder);
+        public Task<IEnumerable<Assignment>> GetAssignmentsByWorker(int id);
+        public Task<IEnumerable<Assignment>> GetAssignmentsByOrder(int id);
         public Task<Assignment> AddAssignment(Assignment assignment);
         public Task<Assignment> UpdateAssignment(Assignment assignment);
-        public Task<bool> DeleteAssignment(int id);
+        public Task<bool> DeleteAssignment(int idWorker, int idOrder);
 
         public Task<IEnumerable<Service>> GetAllServices();
         public Task<Service> GetService(int id);
@@ -112,8 +122,9 @@ namespace Final_thesis_api.Services
         public Task<Supplier> AddSupplier(Supplier supplier);
         public Task<Supplier> UpdateSupplier(Supplier supplier);
         public Task<bool> DeleteSupplier(int id);
+        #endregion
 
-        //Dictionary data
+        #region Dictionary models
         public Task<IEnumerable<Worksite>> GetAllWorksites();
         public Task<Worksite> GetWorksite(int id);
         public Task<Worksite> AddWorksite(Worksite worksite);
@@ -179,5 +190,9 @@ namespace Final_thesis_api.Services
         public Task<PriceList> AddPriceList(PriceList priceList);
         public Task<PriceList> UpdatePriceList(PriceList serviceName);
         public Task<bool> DeletePriceList(int id);
+
+        public Task<IEnumerable<Role>> GetAllRoles();
+        public Task<IEnumerable<Role>> GetAllUserRoles(int id);
+        #endregion
     }
 }
