@@ -2,11 +2,21 @@
 using Final_thesis_api.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Final_thesis_api.Models.DTOs;
 
 namespace Final_thesis_api.Services
 {
     public interface IDbService
     {
+        public Task<UserData> GetUserLoginData(string email);
+        public Task<IEnumerable<Role>> GetAllUserRoles(int id);
+
+        public Task<IEnumerable<RoleAssignment>> GetAllRoleAssignments();
+        public Task<RoleAssignment> GetRoleAssignment(int id);
+        public Task<RoleAssignment> AddRoleAssignment(RoleAssignment roleAssignment);
+        public Task<RoleAssignment> UpdateRoleAssignment(RoleAssignment roleAssignment);
+        public Task<bool> DeleteRoleAssignment(int id);
+
         public Task<IEnumerable<ValuationPriceList>> GetAllValuationPriceLists();
         public Task<ValuationPriceList> GetValuationPriceList(int id);
         public Task<ValuationPriceList> AddValuationPriceList(ValuationPriceList valuationPriceList);
