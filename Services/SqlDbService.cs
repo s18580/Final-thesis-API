@@ -1,9 +1,11 @@
 ﻿using Final_thesis_api.Models;
 using Final_thesis_api.Models.DictionaryModels;
+using Microsoft.EntityFrameworkCore;
 using Final_thesis_api.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Final_thesis_api.Services
 {
@@ -50,6 +52,14 @@ namespace Final_thesis_api.Services
             throw new NotImplementedException();
         }
         public Task<bool> DeleteRoleAssignment(int idWorker, int idRole)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<bool> DeleteRoleAssignment(RoleAssignment roleAssignment)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<bool> DeleteRoleAssignments(IEnumerable<RoleAssignment> roleAssignment)
         {
             throw new NotImplementedException();
         }
@@ -351,25 +361,62 @@ namespace Final_thesis_api.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Worker>> GetAllWorkers()
+        public async Task<IEnumerable<Worker>> GetAllWorkers()
         {
-            throw new NotImplementedException();
+            return await _context.Workers
+                                 .ToListAsync();
         }
-        public Task<Worker> GetWorker(int id)
+        public async Task<Worker> GetWorker(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Workers
+                                 .Where(p => p.IdWorker == id)
+                                 .SingleOrDefaultAsync();
         }
-        public Task<Worker> AddWorker(Worker worker)
+        public async Task<Worker> AddWorker(Worker worker)
         {
-            throw new NotImplementedException();
+            await _context.Workers.AddAsync(worker);
+            await _context.SaveChangesAsync();
+
+            return worker;
         }
-        public Task<Worker> UpdateWorker(Worker worker)
+        public async Task<Worker> UpdateWorker(Worker worker)
         {
-            throw new NotImplementedException();
+            var updatedWorker = await GetWorker(worker.IdWorker);
+
+            if (!string.Equals(updatedWorker.Name, worker.Name)) updatedWorker.Name = worker.Name;
+            if (!string.Equals(updatedWorker.LastName, worker.LastName)) updatedWorker.LastName = worker.LastName;
+            if (!string.Equals(updatedWorker.PhonerNumber, worker.PhonerNumber)) updatedWorker.PhonerNumber = worker.PhonerNumber;
+            if (!string.Equals(updatedWorker.EmailAddres, worker.EmailAddres)) updatedWorker.EmailAddres = worker.EmailAddres;
+
+            await _context.SaveChangesAsync();
+
+            return updatedWorker;
         }
-        public Task<bool> DeleteWorker(int id)
+        public async Task<bool> DisableWorker(int id)
         {
-            throw new NotImplementedException();
+            var worker = await GetWorker(id);
+            worker.IsDisabled = true;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+        public async Task<bool> DeleteWorker(int id)
+        {
+            var worker = await GetWorker(id);
+            if (!worker.IsDisabled)
+            {
+                throw new Exception("Cannot delete not disabled worker.");
+            }
+
+            worker.PhonerNumber = null;
+            worker.EmailAddres = null;
+            worker.PassHash = null;
+
+            var roleAssignments = await GetRolesAssignmentByWorker(worker.IdWorker);
+            await DeleteRoleAssignments(roleAssignments);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public Task<IEnumerable<Customer>> GetAllCustomers()
