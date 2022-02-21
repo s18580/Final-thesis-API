@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Final_thesis_api.Models.DTOs;
+using Serilog;
 
 namespace Final_thesis_api.Controllers
 {
@@ -19,10 +20,11 @@ namespace Final_thesis_api.Controllers
         }
 
         [HttpPost]
-        [Route("login")]
+        [Route("loginGoogle")]
         public async Task<IActionResult> LoginGoogle()
         {
             //ToDo
+            Log.Information("Przykład logowania");
             return Ok();
         }
 
