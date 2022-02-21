@@ -20,6 +20,7 @@ namespace Final_thesis_api
 
             try
             {
+                Log.Information("Application starting up.");
                 CreateHostBuilder(args).Build().Run();
             }
             catch(Exception e)
