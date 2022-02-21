@@ -63,13 +63,12 @@ namespace Final_thesis_api.Models
                 opt.Property(p => p.PhonerNumber)
                    .HasMaxLength(32);
 
-                opt.Property(p => p.EmailAddress)
+                opt.Property(p => p.EmailAddres)
                    .HasMaxLength(255)
                    .IsRequired();
 
                 opt.Property(p => p.PassHash)
-                   .HasMaxLength(200)
-                   .IsRequired();
+                   .HasMaxLength(200);
 
                 opt.HasOne(p => p.Worksite)
                    .WithMany(p => p.Workers)
