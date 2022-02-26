@@ -8,7 +8,7 @@ namespace Final_thesis_api.Models
         public int IdWorker { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
-        public string PhonerNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public string EmailAddres { get; set; }
         public string PassHash { get; set; }
         public bool IsDisabled { get; set; }

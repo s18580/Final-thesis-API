@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Net.Mail;
 
 namespace Final_thesis_api.Services
 {
@@ -17,6 +19,21 @@ namespace Final_thesis_api.Services
         public SqlDbService(ModelContext context)
         {
             _context = context;
+        }
+
+        private bool IsStringValid(string target, int maxLength, bool isRequired, string pattern = "")
+        {
+            if (target.Length >= maxLength || (string.IsNullOrEmpty(target) && isRequired))
+            {
+                return false;
+            }
+
+            if (pattern != "")
+            {
+                return Regex.IsMatch(target, pattern);
+            }
+
+            return true;
         }
 
         #region DTOs
@@ -370,7 +387,7 @@ namespace Final_thesis_api.Services
         {
             return await _context.Workers
                                  .Where(p => p.IdWorker == id)
-                                 .SingleOrDefaultAsync();
+                                 .SingleAsync();
         }
         public async Task<Worker> AddWorker(Worker worker)
         {
@@ -383,10 +400,10 @@ namespace Final_thesis_api.Services
         {
             var updatedWorker = await GetWorker(worker.IdWorker);
 
-            if (!string.Equals(updatedWorker.Name, worker.Name)) updatedWorker.Name = worker.Name;
-            if (!string.Equals(updatedWorker.LastName, worker.LastName)) updatedWorker.LastName = worker.LastName;
-            if (!string.Equals(updatedWorker.PhonerNumber, worker.PhonerNumber)) updatedWorker.PhonerNumber = worker.PhonerNumber;
-            if (!string.Equals(updatedWorker.EmailAddres, worker.EmailAddres)) updatedWorker.EmailAddres = worker.EmailAddres;
+            if (!string.Equals(updatedWorker.Name, worker.Name) && IsStringValid(worker.Name, 32, true)) updatedWorker.Name = worker.Name;
+            if (!string.Equals(updatedWorker.LastName, worker.LastName) && IsStringValid(worker.LastName, 64, true)) updatedWorker.LastName = worker.LastName;
+            if (!string.Equals(updatedWorker.PhoneNumber, worker.PhoneNumber) && IsStringValid(worker.PhoneNumber, 32, false)) updatedWorker.PhoneNumber = worker.PhoneNumber; // add regex for phones
+            if (!string.Equals(updatedWorker.EmailAddres, worker.EmailAddres) && IsStringValid(worker.EmailAddres, 255, true, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$")) updatedWorker.EmailAddres = worker.EmailAddres;
 
             await _context.SaveChangesAsync();
 
@@ -408,7 +425,7 @@ namespace Final_thesis_api.Services
                 throw new Exception("Cannot delete not disabled worker.");
             }
 
-            worker.PhonerNumber = null;
+            worker.PhoneNumber = null;
             worker.EmailAddres = null;
             worker.PassHash = null;
 
