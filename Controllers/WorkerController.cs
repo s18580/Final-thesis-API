@@ -2,6 +2,7 @@
 using Final_thesis_api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Final_thesis_api.Controllers
@@ -21,43 +22,72 @@ namespace Final_thesis_api.Controllers
         [Route("getWorker")]
         public async Task<IActionResult> GetWorker(int idWorker)
         {
-            var worker = await _service.GetWorker(idWorker);
-            return Ok(worker);
+            try
+            {
+                var worker = await _service.GetWorker(idWorker);
+                return Ok(worker);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         [Route("getWorkers")]
         public async Task<IActionResult> GetWorkers()
         {
-            var workers = await _service.GetAllWorkers();
-            return Ok(workers);
+            try 
+            {
+                var workers = await _service.GetAllWorkers();
+                return Ok(workers);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost]
         [Route("addWorker")]
         public async Task<IActionResult> CreateWorker([FromBody] Worker worker)
         {
-            var newWorker = await _service.AddWorker(worker);
-            return Ok(newWorker);
+            try
+            {
+                var newWorker = await _service.AddWorker(worker);
+                return Ok(newWorker);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost]
         [Route("updateWorker")]
         public async Task<IActionResult> UpdateWorkerData([FromBody] Worker worker)
         {
-            var updatedWorker = await _service.UpdateWorker(worker);
-            return Ok(updatedWorker);
+            try
+            {
+                var updatedWorker = await _service.UpdateWorker(worker);
+                return Ok(updatedWorker);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost]
         [Route("disableWorker")]
         public async Task<IActionResult> DisableWorker(int idWorker)
         {
-            if(await _service.DisableWorker(idWorker))
+            try
             {
+                await _service.DisableWorker(idWorker);
                 return Ok();
             }
-            else
+            catch (Exception e)
             {
                 return BadRequest();
             }
@@ -67,11 +97,12 @@ namespace Final_thesis_api.Controllers
         [Route("deleteWorker")]
         public async Task<IActionResult> DeleteWorker(int idWorker)
         {
-            if (await _service.DeleteWorker(idWorker))
+            try
             {
+                await _service.DeleteWorker(idWorker);
                 return Ok();
             }
-            else
+            catch (Exception e)
             {
                 return BadRequest();
             }
