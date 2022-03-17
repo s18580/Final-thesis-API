@@ -20,6 +20,8 @@ namespace Final_thesis_api.Services
         public Task<RoleAssignment> AddRoleAssignment(RoleAssignment roleAssignment);
         public Task<RoleAssignment> UpdateRoleAssignment(RoleAssignment roleAssignment);
         public Task<bool> DeleteRoleAssignment(int idWorker, int idRole);
+        public Task<bool> DeleteRoleAssignment(RoleAssignment roleAssignment);
+        public Task<bool> DeleteRoleAssignments(IEnumerable<RoleAssignment> roleAssignment);
 
         public Task<IEnumerable<ValuationPriceList>> GetAllValuationPriceLists();
         public Task<ValuationPriceList> GetValuationPriceList(int idValutaion, int idPriceList);
@@ -105,10 +107,11 @@ namespace Final_thesis_api.Services
         public Task<Valuation> UpdateValuation(Valuation valuation);
         public Task<bool> DeleteValuation(int id);
 
-        public Task<IEnumerable<Worker>> GetAllWorkers();
+        public Task<IEnumerable<Worker>> GetAllWorkers(bool disabled);
         public Task<Worker> GetWorker(int id);
         public Task<Worker> AddWorker(Worker worker);
         public Task<Worker> UpdateWorker(Worker worker);
+        public Task<bool> DisableWorker(int id);
         public Task<bool> DeleteWorker(int id);
 
         public Task<IEnumerable<Customer>> GetAllCustomers();
