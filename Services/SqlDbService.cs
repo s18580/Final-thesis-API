@@ -378,9 +378,11 @@ namespace Final_thesis_api.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Worker>> GetAllWorkers()
+        public async Task<IEnumerable<Worker>> GetAllWorkers(bool disabled)
         {
             return await _context.Workers
+                                 .Where(p => p.IsDisabled == disabled)
+                                 .Where(p => p.EmailAddres != null)
                                  .ToListAsync();
         }
         public async Task<Worker> GetWorker(int id)

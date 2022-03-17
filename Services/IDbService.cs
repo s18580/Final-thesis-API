@@ -107,7 +107,7 @@ namespace Final_thesis_api.Services
         public Task<Valuation> UpdateValuation(Valuation valuation);
         public Task<bool> DeleteValuation(int id);
 
-        public Task<IEnumerable<Worker>> GetAllWorkers();
+        public Task<IEnumerable<Worker>> GetAllWorkers(bool disabled);
         public Task<Worker> GetWorker(int id);
         public Task<Worker> AddWorker(Worker worker);
         public Task<Worker> UpdateWorker(Worker worker);

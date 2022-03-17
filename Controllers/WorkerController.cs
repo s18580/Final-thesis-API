@@ -11,6 +11,13 @@ namespace Final_thesis_api.Controllers
     [ApiController]
     public class WorkerController : ControllerBase
     {
+        /* To Improve Section
+         * 1. Change types of errors in catch statments.
+         * 2. Add data validation ?
+         * 3. Add authorization/authentication
+         * 4. Add comments for db methods
+         */
+
         private readonly IDbService _service;
         public WorkerController(IDbService service)
         {
@@ -35,11 +42,11 @@ namespace Final_thesis_api.Controllers
 
         [HttpGet]
         [Route("getWorkers")]
-        public async Task<IActionResult> GetWorkers()
+        public async Task<IActionResult> GetWorkers(bool disabled)
         {
             try 
             {
-                var workers = await _service.GetAllWorkers();
+                var workers = await _service.GetAllWorkers(disabled);
                 return Ok(workers);
             }
             catch (Exception e)
