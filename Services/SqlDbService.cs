@@ -482,25 +482,40 @@ namespace Final_thesis_api.Services
         #endregion
 
         #region Dictionary models
-        public Task<IEnumerable<Worksite>> GetAllWorksites()
+        public async Task<IEnumerable<Worksite>> GetAllWorksites()
         {
-            throw new NotImplementedException();
+            return await _context.Worksites
+                                 .ToListAsync();
         }
-        public Task<Worksite> GetWorksite(int id)
+        public async Task<Worksite> GetWorksite(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Worksites
+                                 .Where(p => p.IdWorksite == id)
+                                 .SingleAsync();
         }
-        public Task<Worksite> AddWorksite(Worksite worksite)
+        public async Task<Worksite> AddWorksite(Worksite worksite)
         {
-            throw new NotImplementedException();
+            await _context.AddAsync(worksite);
+            await _context.SaveChangesAsync();
+
+            return worksite;
         }
-        public Task<Worksite> UpdateWorksite(Worksite worksite)
+        public async Task<Worksite> UpdateWorksite(Worksite worksite)
         {
-            throw new NotImplementedException();
+            var updatedWorksite = await GetWorksite(worksite.IdWorksite);
+
+            if (!string.Equals(updatedWorksite.Name, worksite.Name) && IsStringValid(worksite.Name, 30, true)) updatedWorksite.Name = worksite.Name;
+
+            return updatedWorksite;
         }
-        public Task<bool> DeleteWorksite(int id)
+        public async Task<bool> DeleteWorksite(int id)
         {
-            throw new NotImplementedException();
+            var worksite = await GetWorksite(id);
+            //_context.Entry(worksite).State = EntityState.Deleted; // which better ?
+            _context.Worksites.Remove(worksite);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public Task<IEnumerable<FileType>> GetAllFileTypes()
